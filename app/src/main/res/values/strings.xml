@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyCityApp</string>
+    <string name="my_city_berlin">My Berlin</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="recommended_place">Recommended Place</string>
+    <string name="back_button">Back</string>
+</resources>
