@@ -38,7 +38,7 @@ enum class MyCityAppScreen(val title: Int) {
 
 @Composable
 fun MyCityApp(
-    windowSize: WindowWidthSizeClass,
+    windowSize: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
     navController: NavHostController = rememberNavController()
 ) {
 

@@ -4,4 +4,7 @@
     <string name="recommendations">Recommendations</string>
     <string name="recommended_place">Recommended Place</string>
     <string name="back_button">Back</string>
+    <string name="tag_recommendation_list">tag_recommendation_list</string>
+    <string name="tag_recommendation_details">tag_recommendation_details</string>
+    <string name="tag_description">tag_description</string>
 </resources>

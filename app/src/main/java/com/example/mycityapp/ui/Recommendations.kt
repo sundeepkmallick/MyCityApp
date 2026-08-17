@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -97,7 +100,11 @@ fun RecommendationListAndDetails(
             onRecommendationListItemClick
         )
 
-        RecommendationDetails(modifier.weight(0.6f), uiState.selectedPlace)
+        RecommendationDetails(
+            modifier
+                .weight(0.6f)
+                .testTag(stringResource(R.string.tag_recommendation_details)),
+            uiState.selectedPlace)
     }
 }
 
@@ -113,7 +120,8 @@ fun RecommendationDetailsScreen(
     val selectedPlace by viewModel.selectedPlace.collectAsStateWithLifecycle()
 
     RecommendationDetails(
-        modifier = Modifier,
+        modifier = Modifier
+            .testTag(stringResource(R.string.tag_recommendation_details)),
         selectedPlace = selectedPlace
     )
 }
@@ -123,7 +131,7 @@ fun RecommendationDetails(modifier: Modifier, selectedPlace: Place?) {
     if (selectedPlace != null) {
         Column(
             modifier = modifier
-                .wrapContentSize()
+                .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_small)),
         ) {
             AsyncImage(
@@ -134,13 +142,17 @@ fun RecommendationDetails(modifier: Modifier, selectedPlace: Place?) {
                     .build(),
                 contentDescription = selectedPlace.name,
                 contentScale = ContentScale.FillBounds,
-                modifier = Modifier.weight(0.5f).fillMaxWidth()
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxWidth()
             )
 
            Column(
-               modifier = Modifier.weight(0.5f).padding(
-                   top = dimensionResource(R.dimen.padding_small)
-               )
+               modifier = Modifier
+                   .weight(0.5f)
+                   .padding(
+                       top = dimensionResource(R.dimen.padding_small)
+                   )
            ) {
                Text(
                    text = selectedPlace.name,
@@ -158,6 +170,7 @@ fun RecommendationDetails(modifier: Modifier, selectedPlace: Place?) {
                )
 
                Text(
+                   modifier = Modifier.testTag(stringResource(R.string.tag_description)),
                    text = selectedPlace.description,
                    style = MaterialTheme.typography.bodyMedium
                )
@@ -181,6 +194,7 @@ fun RecommendationList(
                 color = MaterialTheme.colorScheme.surface
             )
             .fillMaxHeight()
+            .testTag(stringResource(R.string.tag_recommendation_list))
     ) {
         items(recommendations) { recommendation ->
             RecommendationListItem(recommendation, contentType, onRecommendationListItemClick)
@@ -227,10 +241,12 @@ fun RecommendationListItem(
 
             Text(
                 text = place.name,
-                modifier = Modifier.weight(0.7f).padding(
-                    start = dimensionResource(R.dimen.padding_small),
-                    end = dimensionResource(R.dimen.padding_small)
-                ),
+                modifier = Modifier
+                    .weight(0.7f)
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_small),
+                        end = dimensionResource(R.dimen.padding_small)
+                    ),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.inverseSurface,
             )
@@ -251,4 +267,19 @@ private fun RecommendationListPreview() {
             )
         }
     }
+}
+
+@Preview(showBackground = true, widthDp = 1000)
+@Composable
+private fun RecommendationListAndDetailsPreview() {
+    val recommendations = LocalDataProvider.getPlacesByCategory(LocalDataProvider.defaultCategory.id)
+    RecommendationListAndDetails(
+        modifier = Modifier,
+        uiState = RecommendationsUiState(
+            recommendations = recommendations,
+            selectedPlace = recommendations.firstOrNull()
+        ),
+        contentType = MyCityAppContentType.LIST_AND_DETAIL,
+        onRecommendationListItemClick = {  },
+    )
 }
